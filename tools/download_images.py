@@ -1,6 +1,7 @@
 """
 Download and returns all paintings and metadata from Wikiart
 in the Ink Wash Painting category
+Upload all downloaded paintings and metadata to Amazon S3
 """
 
 import json
@@ -20,7 +21,7 @@ METADATA_REQUEST_TIMEOUT = 2 * 60
 PAINTINGS_REQUEST_TIMEOUT = 5 * 60
 BASE_BUCKET  = 'ink-wash-painting'
 # Local filepaths
-TOP_LEVEL_PATH = Path(r"C:\Users\Julie\Desktop\py")
+TOP_LEVEL_PATH = Path(r"C:\Users\Julie\Desktop\ink-wash-art")
 ASSET_PATH = TOP_LEVEL_PATH/ "assets"
 # Metadata filename
 METADATA_FILENAME = 'metadata.json'
@@ -101,7 +102,9 @@ def download_images(links):
             print(e)
             sys.exit(1)
 
-        image_name  = link.rsplit('/', 1)[1]
+        artist_name = link.rsplit('/', 2)[1]
+        image_name  = link.rsplit('/', 2)[2]
+        image_name = artist_name + image_name
 
         file_location = ASSET_PATH.joinpath(image_name)
 

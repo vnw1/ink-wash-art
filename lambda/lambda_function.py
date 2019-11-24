@@ -19,6 +19,7 @@ s3 = boto3.client('s3')
 
 def lambda_handler(event, context):
     bucket_name = 'ink-wash-painting'
+    bucket_backup = 'ink-wash-painting-backup'
     key = 'metadata.json'
 
     try:
@@ -99,3 +100,11 @@ def lambda_handler(event, context):
 
     except TwythonError as e:
         print(e)
+
+    # Move uploaded painting to backup bucket and delete it
+    copy_source = {
+    'Bucket': bucket_name,
+    'Key': url
+    }
+    s3_resource.meta.client.copy(copy_source, bucket_backup, url)
+    s3.delete_object(Bucket=bucket_name, Key=url)
